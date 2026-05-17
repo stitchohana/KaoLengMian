@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="GameConfig" format=3]
+[ext_resource type="Script" path="res://resources/game_config.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+day_duration_seconds = 180.0
+egg_spread_time = 2.0
+sausage_cook_time = 3.0
+onion_max_fill = 3
+sauce_max_fill = 3
+min_value_ratio = 0.3
+fill_weight_onion = 0.5
+fill_weight_sauce = 0.5
+mismatch_penalty = 0.5
+max_boxes = 3
+customers_per_day_base = 5
+customers_per_day_increment = 1
+base_patience_time = 45.0
+patience_decrease_per_day = 1.5
+base_spawn_interval = 12.0
+spawn_interval_decrease = 0.5
+angry_customer_threshold = 3
+cut_clicks_required = 5
+swipe_threshold_px = 50.0
+click_vs_swipe_threshold_px = 30.0
+fly_animation_duration = 0.3
+base_price_min = 8
+base_price_max = 15

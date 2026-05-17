@@ -1,0 +1,227 @@
+[gd_scene format=3 uid="uid://bckxq3xgffjf3"]
+
+[ext_resource type="Script" uid="uid://cyp0ckh2cl7r5" path="res://scripts/main.gd" id="1"]
+
+[node name="Main" type="Node2D" unique_id=588978663]
+script = ExtResource("1")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1143254005]
+anchor_mode = 0
+
+[node name="Background" type="ColorRect" parent="." unique_id=1827055705]
+offset_right = 1024.0
+offset_bottom = 768.0
+mouse_filter = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="CustomerQueue" type="Node2D" parent="." unique_id=1741530147]
+
+[node name="QueuePos0" type="Marker2D" parent="CustomerQueue" unique_id=484734887]
+position = Vector2(650, 100)
+
+[node name="QueuePos1" type="Marker2D" parent="CustomerQueue" unique_id=1082363405]
+position = Vector2(800, 100)
+
+[node name="QueuePos2" type="Marker2D" parent="CustomerQueue" unique_id=1865426967]
+position = Vector2(950, 100)
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=2131335215]
+position = Vector2(1100, 100)
+
+[node name="BoxArea" type="Node2D" parent="." unique_id=208858927]
+position = Vector2(368.765, 180)
+
+[node name="BoxStackLabel" type="Label" parent="BoxArea" unique_id=70978763]
+offset_left = -120.0
+offset_right = -120.0
+text = "纸盒堆"
+horizontal_alignment = 1
+
+[node name="BoxSlot0" type="Marker2D" parent="BoxArea" unique_id=775967669]
+
+[node name="BoxSlot1" type="Marker2D" parent="BoxArea" unique_id=1887838008]
+position = Vector2(80, 0)
+
+[node name="BoxSlot2" type="Marker2D" parent="BoxArea" unique_id=1609615259]
+position = Vector2(160, 0)
+
+[node name="ChickenPos" type="Marker2D" parent="." unique_id=839250960]
+position = Vector2(80, 300)
+
+[node name="GrillArea" type="Node2D" parent="." unique_id=449953756]
+position = Vector2(411, 350)
+
+[node name="IngredientBox" type="Node2D" parent="." unique_id=39017806]
+position = Vector2(800, 380)
+
+[node name="Bg" type="ColorRect" parent="IngredientBox" unique_id=317483669]
+offset_left = -100.0
+offset_top = -45.0
+offset_right = 100.0
+offset_bottom = 45.0
+mouse_filter = 2
+color = Color(0.25, 0.25, 0.25, 0.9)
+
+[node name="Title" type="Label" parent="IngredientBox" unique_id=1823350793]
+offset_left = -55.0
+offset_top = -55.0
+offset_right = -55.0
+offset_bottom = -55.0
+text = "--- 食材盒 ---"
+
+[node name="EggSlot" type="Node2D" parent="IngredientBox" unique_id=1918914350]
+position = Vector2(-60, 10)
+
+[node name="Bg" type="ColorRect" parent="IngredientBox/EggSlot" unique_id=1649340435]
+offset_left = -22.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = 27.0
+mouse_filter = 2
+color = Color(0.18, 0.18, 0.18, 0.9)
+
+[node name="Label" type="Label" parent="IngredientBox/EggSlot" unique_id=2020524025]
+offset_left = -22.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = 27.0
+text = "鸡蛋"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OnionSlot" type="Node2D" parent="IngredientBox" unique_id=24972257]
+position = Vector2(-10, 10)
+
+[node name="Bg" type="ColorRect" parent="IngredientBox/OnionSlot" unique_id=1905058301]
+offset_left = -22.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = 27.0
+mouse_filter = 2
+color = Color(0.18, 0.18, 0.18, 0.9)
+
+[node name="Label" type="Label" parent="IngredientBox/OnionSlot" unique_id=1668715394]
+offset_left = -22.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = 27.0
+text = "洋葱"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChiliSlot" type="Node2D" parent="IngredientBox" unique_id=2057957931]
+position = Vector2(40, 10)
+
+[node name="Bg" type="ColorRect" parent="IngredientBox/ChiliSlot" unique_id=1108524484]
+offset_left = -22.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = 27.0
+mouse_filter = 2
+color = Color(0.18, 0.18, 0.18, 0.9)
+
+[node name="Label" type="Label" parent="IngredientBox/ChiliSlot" unique_id=1904813503]
+offset_left = -22.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = 27.0
+text = "辣酱"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NoodleZone" type="Node2D" parent="." unique_id=1330735063]
+position = Vector2(100, 530)
+
+[node name="Bg" type="ColorRect" parent="NoodleZone" unique_id=1182705203]
+offset_left = -60.0
+offset_top = -35.0
+offset_right = 60.0
+offset_bottom = 35.0
+mouse_filter = 2
+color = Color(0.25, 0.25, 0.25, 0.6)
+
+[node name="Label" type="Label" parent="NoodleZone" unique_id=994173119]
+offset_top = -25.0
+offset_bottom = -25.0
+text = "--- 面 ---"
+horizontal_alignment = 1
+
+[node name="OnionZone" type="Node2D" parent="." unique_id=1570208769]
+position = Vector2(280, 530)
+
+[node name="Bg" type="ColorRect" parent="OnionZone" unique_id=1859093242]
+offset_left = -60.0
+offset_top = -35.0
+offset_right = 60.0
+offset_bottom = 35.0
+mouse_filter = 2
+color = Color(0.25, 0.25, 0.25, 0.6)
+
+[node name="Label" type="Label" parent="OnionZone" unique_id=1811241215]
+offset_top = -25.0
+offset_bottom = -25.0
+text = "--- 菜 ---"
+horizontal_alignment = 1
+
+[node name="SausageZone" type="Node2D" parent="." unique_id=1553518751]
+position = Vector2(460, 530)
+
+[node name="Bg" type="ColorRect" parent="SausageZone" unique_id=1459325604]
+offset_left = -60.0
+offset_top = -35.0
+offset_right = 60.0
+offset_bottom = 35.0
+mouse_filter = 2
+color = Color(0.25, 0.25, 0.25, 0.6)
+
+[node name="Label" type="Label" parent="SausageZone" unique_id=1679592022]
+offset_top = -25.0
+offset_bottom = -25.0
+text = "--- 肉 ---"
+horizontal_alignment = 1
+
+[node name="ChiliZone" type="Node2D" parent="." unique_id=1155267490]
+position = Vector2(640, 530)
+
+[node name="Bg" type="ColorRect" parent="ChiliZone" unique_id=1406766495]
+offset_left = -60.0
+offset_top = -35.0
+offset_right = 60.0
+offset_bottom = 35.0
+mouse_filter = 2
+color = Color(0.25, 0.25, 0.25, 0.6)
+
+[node name="Label" type="Label" parent="ChiliZone" unique_id=1776251153]
+offset_top = -25.0
+offset_bottom = -25.0
+text = "--- 酱 ---"
+horizontal_alignment = 1
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1632032164]
+
+[node name="DayLabel" type="Label" parent="HUD" unique_id=2045805504]
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 20.0
+offset_bottom = 10.0
+text = "Day 0"
+
+[node name="TimerLabel" type="Label" parent="HUD" unique_id=708374983]
+offset_left = 200.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 10.0
+text = "03:00"
+
+[node name="MoneyLabel" type="Label" parent="HUD" unique_id=65134143]
+offset_left = 400.0
+offset_top = 10.0
+offset_right = 400.0
+offset_bottom = 10.0
+text = "$0"
+
+[node name="OrderContainer" type="VBoxContainer" parent="HUD" unique_id=21939033]
+offset_left = 820.0
+offset_top = 50.0
+offset_right = 1000.0
+offset_bottom = 50.0

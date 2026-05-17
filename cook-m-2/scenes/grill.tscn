@@ -1,0 +1,114 @@
+[gd_scene format=3 uid="uid://bb3h4vjlsmmch"]
+
+[ext_resource type="Script" uid="uid://dnorbs0cgwm6i" path="res://scripts/grill.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(323, 223)
+
+[node name="Grill" type="Node2D" unique_id=671821808]
+script = ExtResource("1")
+
+[node name="Bg" type="ColorRect" parent="." unique_id=2136468777]
+offset_left = -163.0
+offset_top = -112.0
+offset_right = 160.0
+offset_bottom = 113.0
+color = Color(0.33, 0.33, 0.33, 1)
+
+[node name="Label" type="Label" parent="." unique_id=1795639640]
+offset_left = -15.0
+offset_top = -5.0
+offset_right = -15.0
+offset_bottom = -5.0
+text = "[ 铁板 ]"
+
+[node name="CutCounter" type="Label" parent="." unique_id=85594458]
+offset_left = -50.0
+offset_top = -50.0
+offset_right = -50.0
+offset_bottom = -50.0
+
+[node name="Labels" type="Node2D" parent="." unique_id=1849164981]
+
+[node name="noodles" type="Label" parent="Labels" unique_id=574727396]
+offset_left = -50.0
+offset_top = -30.0
+offset_right = -50.0
+offset_bottom = -30.0
+text = "面饼"
+
+[node name="egg" type="Label" parent="Labels" unique_id=1817137003]
+offset_left = 28.0
+offset_top = -62.0
+offset_right = 62.504997
+offset_bottom = -39.0
+text = "鸡蛋"
+
+[node name="egg_spread" type="Label" parent="Labels" unique_id=1363131482]
+offset_left = -50.0
+offset_top = -63.0
+offset_right = -2.0
+offset_bottom = -40.0
+text = "蛋已摊"
+
+[node name="flipped" type="Label" parent="Labels" unique_id=711470090]
+offset_left = 29.0
+offset_top = -34.0
+offset_right = 83.0
+offset_bottom = -11.0
+text = "✅翻面"
+
+[node name="sausage" type="Label" parent="Labels" unique_id=2023486124]
+offset_left = 73.0
+offset_top = 18.0
+offset_right = 105.0
+offset_bottom = 41.0
+text = "烤肠"
+
+[node name="onion" type="Label" parent="Labels" unique_id=1255852528]
+offset_left = -97.0
+offset_top = 8.0
+offset_right = -65.0
+offset_bottom = 31.0
+text = "洋葱"
+
+[node name="sauce" type="Label" parent="Labels" unique_id=751771999]
+offset_left = 20.0
+offset_top = 27.0
+offset_right = 52.0
+offset_bottom = 50.0
+text = "辣酱"
+
+[node name="rolled" type="Label" parent="Labels" unique_id=1002281496]
+offset_left = -46.0
+offset_top = 23.0
+offset_right = 2.0
+offset_bottom = 46.0
+text = "已卷起"
+
+[node name="cut" type="Label" parent="Labels" unique_id=378986799]
+offset_left = -71.0
+offset_top = 58.0
+offset_right = -23.0
+offset_bottom = 81.0
+text = "已切段"
+
+[node name="boxed" type="Label" parent="Labels" unique_id=118685422]
+offset_left = 22.0
+offset_top = 56.0
+offset_right = 70.0
+offset_bottom = 79.0
+text = "已装盒"
+
+[node name="SausageDropZone" type="Area2D" parent="." unique_id=1061734318]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SausageDropZone" unique_id=2005844067]
+shape = SubResource("1")
+
+[node name="EggSpreadTimer" type="Timer" parent="." unique_id=502416024]
+wait_time = 2.0
+one_shot = true
+
+[node name="SausageCookTimer" type="Timer" parent="." unique_id=1623894450]
+wait_time = 3.0
+one_shot = true
