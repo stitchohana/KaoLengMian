@@ -121,7 +121,6 @@ func _setup_ingredient_box() -> void:
 		scene.item_id = s[0]
 		scene.item_color = s[2]
 		scene.display_name = s[3]
-		scene.target_node_path = "/root/Main/GrillArea"
 		s[1].add_child(scene)
 		scene.position = Vector2.ZERO
 		scene.hide()
@@ -168,7 +167,6 @@ func _update_hud() -> void:
 func _on_noodle_arrived(_id: String) -> void:
 	if not noodle_item or not is_instance_valid(noodle_item):
 		return
-	noodle_item._can_click = false
 
 	var flying = ITEM_SCENES.noodle.instantiate()
 	flying.item_color = Color(0.91, 0.84, 0.72)
@@ -177,12 +175,17 @@ func _on_noodle_arrived(_id: String) -> void:
 	add_child(flying)
 	flying.global_position = noodle_zone.global_position
 
-	var target = grill_area.global_position
+	noodle_item.call_deferred("set", "_can_click", false)
+	var cook_pos = _grill_node.get_node("CookPos")
+	var target = cook_pos.global_position
 	var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(flying, "global_position", target, 0.5)
 	tween.tween_callback(func():
 		flying.queue_free()
 		Session.current_dish.has_noodles = true
+		var ns = cook_pos.get_node("NoodleSprite")
+		if ns:
+			ns.show()
 		print("面饼已放入铁板")
 	)
 
@@ -236,6 +239,7 @@ func _on_chili_barrel_arrived(_id: String) -> void:
 
 func _on_sausage_arrived(_id: String) -> void:
 	sausage_raw.hide()
+	sausage_raw.call_deferred("set", "_can_click", false)
 	var flying = ITEM_SCENES.sausage.instantiate()
 	flying.item_color = Color(0.80, 0.36, 0.36)
 	flying.display_name = ""
@@ -243,18 +247,32 @@ func _on_sausage_arrived(_id: String) -> void:
 	add_child(flying)
 	flying.global_position = sausage_zone.global_position
 
-	var target = grill_area.global_position
+	if not _grill_node or not _grill_node.has_node("SausagePos"):
+		flying.queue_free()
+		return
+	var spos = _grill_node.get_node("SausagePos")
 	var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(flying, "global_position", target, 0.5)
+	tween.tween_property(flying, "global_position", spos.global_position, 0.5)
 	tween.tween_callback(func():
 		flying.queue_free()
+		var ss = spos.get_node_or_null("SausageSprite")
+		if ss:
+			ss.show()
 		if _grill_node and _grill_node.has_method("_on_sausage_dropped"):
 			_grill_node._on_sausage_dropped()
 	)
 
 func _on_dish_cut() -> void:
+	if _grill_node and _grill_node.has_node("CookPos"):
+		var cook_pos = _grill_node.get_node("CookPos")
+		for child in cook_pos.get_children():
+			if child is ColorRect:
+				child.hide()
 	var drag = load("res://scenes/noodle_drag_item.tscn").instantiate()
-	drag.global_position = grill_area.global_position + Vector2(0, 80)
+	if _grill_node and _grill_node.has_node("CookPos"):
+		drag.global_position = _grill_node.get_node("CookPos").global_position
+	else:
+		drag.global_position = grill_area.global_position
 	add_child(drag)
 
 func _on_sausage_dropped(_zone: Node) -> void:
@@ -264,9 +282,39 @@ func _on_sausage_dropped(_zone: Node) -> void:
 		_grill_node._on_sausage_dropped()
 
 func _on_fill_item_used(_item_id: String) -> void:
-	# 填充物品使用后不隐藏，可多次点击直到填满
-	# 由 fillable_item.gd 控制最大次数
-	pass
+	var slot_item = _find_fill_item(_item_id)
+	if slot_item and is_instance_valid(slot_item):
+		slot_item.hide()
+
+	var slot_node = {"egg": egg_slot, "onion": onion_slot, "chili": chili_slot}.get(_item_id)
+	if not slot_node or not _grill_node or not _grill_node.has_node("CookPos"):
+		return
+
+	var cook_pos = _grill_node.get_node("CookPos")
+	var flying = FILL_ITEM_SCENES[_item_id].instantiate()
+	flying.item_color = {"egg": Color(1,0.97,0.86), "onion": Color(0.87,0.63,0.87), "chili": Color(0.86,0.08,0.24)}.get(_item_id, Color.WHITE)
+	flying.display_name = ""
+	flying._can_click = false
+	add_child(flying)
+	flying.global_position = slot_node.global_position
+
+	var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(flying, "global_position", cook_pos.global_position, 0.5)
+	tween.tween_callback(func():
+		flying.queue_free()
+		if _item_id == "egg":
+			var es = cook_pos.get_node_or_null("EggSprite")
+			if es:
+				es.show()
+		elif _item_id == "onion":
+			var ns = cook_pos.get_node_or_null("NoodleSprite")
+			if ns:
+				ns.color = Color(0.87, 0.63, 0.87)
+		elif _item_id == "chili":
+			var ns = cook_pos.get_node_or_null("NoodleSprite")
+			if ns:
+				ns.color = Color(0.86, 0.08, 0.24)
+	)
 
 func _on_day_started(day: int) -> void:
 	print("Day %d 开始！" % day)
@@ -311,10 +359,19 @@ func _on_customer_left(_customer: Node, reason: String) -> void:
 		for child in slot.get_children():
 			if child is Area2D:
 				child.hide()
+	if noodle_item and is_instance_valid(noodle_item):
+		noodle_item._can_click = true
+	if chicken_item and is_instance_valid(chicken_item):
+		chicken_item._can_click = true
 	if onion_block and is_instance_valid(onion_block):
 		onion_block.reset()
 	if chili_barrel and is_instance_valid(chili_barrel):
 		chili_barrel._can_click = true
+	if sausage_raw and is_instance_valid(sausage_raw):
+		sausage_raw.show()
+		sausage_raw._can_click = true
+	if _grill_node and _grill_node.has_method("reset"):
+		_grill_node.reset()
 
 func _on_all_customers_done() -> void:
 	if Session.game_state == Session.GameState.DAY_ACTIVE:

@@ -112,3 +112,33 @@ one_shot = true
 [node name="SausageCookTimer" type="Timer" parent="." unique_id=1623894450]
 wait_time = 3.0
 one_shot = true
+
+[node name="CookPos" type="Node2D" parent="." unique_id=1482192379]
+position = Vector2(-50, -1)
+
+[node name="NoodleSprite" type="ColorRect" parent="CookPos" unique_id=1794850567]
+visible = false
+offset_left = -35.0
+offset_top = -25.0
+offset_right = 35.0
+offset_bottom = 25.0
+color = Color(0.91, 0.84, 0.72, 1)
+
+[node name="EggSprite" type="ColorRect" parent="CookPos" unique_id=1173621736]
+visible = false
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+color = Color(1, 0.97, 0.86, 1)
+
+[node name="SausagePos" type="Node2D" parent="." unique_id=1208316093]
+position = Vector2(67, 1)
+
+[node name="SausageSprite" type="ColorRect" parent="SausagePos" unique_id=237594238]
+visible = false
+offset_left = -20.0
+offset_top = -8.0
+offset_right = 20.0
+offset_bottom = 8.0
+color = Color(0.8, 0.36, 0.36, 1)

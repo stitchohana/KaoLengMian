@@ -10,6 +10,7 @@ var _cut_clicks: int = 0
 var _cut_click_timer: float = 0.0
 var _sausage_cooking: bool = false
 var _sausage_available: bool = false
+var _sausage_flying: bool = false
 
 @onready var bg: ColorRect = $Bg
 @onready var labels: Node2D = $Labels
@@ -17,6 +18,9 @@ var _sausage_available: bool = false
 @onready var egg_timer: Timer = $EggSpreadTimer
 @onready var sausage_timer: Timer = $SausageCookTimer
 @onready var drop_zone: Area2D = $SausageDropZone
+@onready var cook_pos: Node2D = $CookPos
+@onready var sausage_pos: Node2D = $SausagePos
+@onready var sausage_sprite: ColorRect = $SausagePos/SausageSprite
 
 func _ready() -> void:
 	egg_timer.timeout.connect(_on_egg_spread_done)
@@ -39,32 +43,26 @@ func _on_sausage_dropped() -> void:
 	if not _sausage_cooking and not _sausage_available:
 		_sausage_cooking = true
 		sausage_timer.start(Config.data.sausage_cook_time)
-		$Labels/sausage.text = "烤肠中..."
-		$Labels/sausage.show()
 
 func _on_sausage_cooked() -> void:
 	_sausage_cooking = false
 	_sausage_available = true
-	$Labels/sausage.text = "烤肠已好"
-	$Labels/sausage.show()
+	sausage_sprite.color = Color(0.9, 0.5, 0.2, 1)
 	sausage_ready.emit(global_position)
 
 func try_use_sausage() -> bool:
 	if _sausage_available and _get_dish().can_add_sausage():
 		_get_dish().sausage_added = true
 		_sausage_available = false
-		$Labels/sausage.hide()
+		sausage_sprite.hide()
 		return true
 	return false
 
 func _input(event: InputEvent) -> void:
-	if not _is_mouse_on_grill():
-		if _sausage_available and _is_mouse_on_sausage_label(event):
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				try_use_sausage()
-		return
-
 	var dish = _get_dish()
+
+	if not _is_mouse_on_grill():
+		return
 
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -84,7 +82,40 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and _is_dragging:
 		_drag_delta += event.relative
 
+func _is_mouse_on_sausage(event: InputEvent) -> bool:
+	if event is InputEventMouseButton or event is InputEventMouseMotion:
+		var mouse = get_global_mouse_position()
+		var half = Vector2(20, 8)
+		var r = Rect2(sausage_pos.global_position - half, Vector2(40, 16))
+		return r.has_point(mouse)
+	return false
+
+func _is_over_cookpos() -> bool:
+	var mouse = get_global_mouse_position()
+	var half = Vector2(35, 25)
+	var r = Rect2(cook_pos.global_position - half, Vector2(70, 50))
+	return r.has_point(mouse)
+
 func _handle_tap(dish: NoodleDish) -> void:
+	if _sausage_available and not _sausage_flying:
+		var mouse = get_global_mouse_position()
+		var half = Vector2(20, 8)
+		var r = Rect2(sausage_pos.global_position - half, Vector2(40, 16))
+		if r.has_point(mouse):
+			_sausage_flying = true
+			var target = cook_pos.global_position - sausage_pos.global_position
+			var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(sausage_sprite, "position", target, 0.35)
+			tween.tween_callback(func():
+				_sausage_flying = false
+				if try_use_sausage():
+					sausage_sprite.hide()
+				else:
+					var bt = create_tween().set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+					bt.tween_property(sausage_sprite, "position", Vector2.ZERO, 0.3)
+			)
+			return
+
 	if dish.can_cut():
 		_cut_clicks += 1
 		_cut_click_timer = 0.0
@@ -104,11 +135,12 @@ func _handle_swipe(dish: NoodleDish) -> void:
 		return
 
 	if abs_x > abs_y:
-		if dish.can_roll():
-			dish.rolled = true
+		pass
 	else:
 		if _drag_delta.y < 0 and dish.can_flip():
 			dish.flipped = true
+		elif _drag_delta.y > 0 and dish.can_roll():
+			dish.rolled = true
 
 func _is_mouse_on_grill() -> bool:
 	if not bg:
@@ -129,12 +161,7 @@ func _update_visuals() -> void:
 	_set_layer_visible("egg_spread", dish.egg_spread and not dish.flipped)
 	_set_layer_visible("flipped", dish.flipped and not dish.rolled)
 
-	if _sausage_cooking:
-		_set_layer_visible("sausage", true)
-	elif _sausage_available:
-		_set_layer_visible("sausage", true)
-	else:
-		_set_layer_visible("sausage", dish.sausage_added)
+	_set_layer_visible("sausage", false)
 
 	_set_layer_visible("onion", dish.onion_fill > 0)
 	_set_layer_visible("sauce", dish.sauce_fill > 0)
@@ -168,6 +195,15 @@ func reset() -> void:
 	_is_dragging = false
 	_sausage_cooking = false
 	_sausage_available = false
+	_sausage_flying = false
+	sausage_sprite.hide()
+	sausage_sprite.position = Vector2.ZERO
+	sausage_sprite.color = Color(0.80, 0.36, 0.36, 1)
 	_update_cut_label()
 	egg_timer.stop()
 	sausage_timer.stop()
+	for child in cook_pos.get_children():
+		if child is ColorRect:
+			child.hide()
+			if child.name == "NoodleSprite":
+				child.color = Color(0.91, 0.84, 0.72, 1)
