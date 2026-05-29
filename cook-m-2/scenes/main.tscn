@@ -17,13 +17,13 @@ color = Color(0.2, 0.2, 0.2, 1)
 [node name="CustomerQueue" type="Node2D" parent="." unique_id=1741530147]
 
 [node name="QueuePos0" type="Marker2D" parent="CustomerQueue" unique_id=484734887]
-position = Vector2(650, 100)
+position = Vector2(293, 101)
 
 [node name="QueuePos1" type="Marker2D" parent="CustomerQueue" unique_id=1082363405]
-position = Vector2(800, 100)
+position = Vector2(479, 97)
 
 [node name="QueuePos2" type="Marker2D" parent="CustomerQueue" unique_id=1865426967]
-position = Vector2(950, 100)
+position = Vector2(647, 102)
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=2131335215]
 position = Vector2(1100, 100)

@@ -239,7 +239,6 @@ func _on_chili_barrel_arrived(_id: String) -> void:
 
 func _on_sausage_arrived(_id: String) -> void:
 	sausage_raw.hide()
-	sausage_raw.call_deferred("set", "_can_click", false)
 	var flying = ITEM_SCENES.sausage.instantiate()
 	flying.item_color = Color(0.80, 0.36, 0.36)
 	flying.display_name = ""
@@ -274,6 +273,16 @@ func _on_dish_cut() -> void:
 	else:
 		drag.global_position = grill_area.global_position
 	add_child(drag)
+
+func _on_dish_boxed() -> void:
+	Session.current_dish.reset()
+	for slot in [egg_slot, onion_slot, chili_slot]:
+		for child in slot.get_children():
+			if child is Area2D:
+				child.hide()
+	_reset_prep_items()
+	if _grill_node and _grill_node.has_method("reset"):
+		_grill_node.reset()
 
 func _on_sausage_dropped(_zone: Node) -> void:
 	# 隐藏生烤肠，通知铁板开始烤制
@@ -354,24 +363,25 @@ func _on_day_timeout() -> void:
 	_clear_day()
 
 func _on_customer_left(_customer: Node, reason: String) -> void:
-	Session.current_dish.reset()
-	for slot in [egg_slot, onion_slot, chili_slot]:
-		for child in slot.get_children():
-			if child is Area2D:
-				child.hide()
-	if noodle_item and is_instance_valid(noodle_item):
-		noodle_item._can_click = true
-	if chicken_item and is_instance_valid(chicken_item):
-		chicken_item._can_click = true
-	if onion_block and is_instance_valid(onion_block):
-		onion_block.reset()
-	if chili_barrel and is_instance_valid(chili_barrel):
-		chili_barrel._can_click = true
-	if sausage_raw and is_instance_valid(sausage_raw):
-		sausage_raw.show()
-		sausage_raw._can_click = true
-	if _grill_node and _grill_node.has_method("reset"):
-		_grill_node.reset()
+	if reason == "timeout":
+		Session.current_dish.reset()
+		for slot in [egg_slot, onion_slot, chili_slot]:
+			for child in slot.get_children():
+				if child is Area2D:
+					child.hide()
+		if noodle_item and is_instance_valid(noodle_item):
+			noodle_item._can_click = true
+		if chicken_item and is_instance_valid(chicken_item):
+			chicken_item._can_click = true
+		if onion_block and is_instance_valid(onion_block):
+			onion_block.reset()
+		if chili_barrel and is_instance_valid(chili_barrel):
+			chili_barrel._can_click = true
+		if sausage_raw and is_instance_valid(sausage_raw):
+			sausage_raw.show()
+			sausage_raw._can_click = true
+		if _grill_node and _grill_node.has_method("reset"):
+			_grill_node.reset()
 
 func _on_all_customers_done() -> void:
 	if Session.game_state == Session.GameState.DAY_ACTIVE:

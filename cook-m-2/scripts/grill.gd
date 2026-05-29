@@ -85,8 +85,8 @@ func _input(event: InputEvent) -> void:
 func _is_mouse_on_sausage(event: InputEvent) -> bool:
 	if event is InputEventMouseButton or event is InputEventMouseMotion:
 		var mouse = get_global_mouse_position()
-		var half = Vector2(20, 8)
-		var r = Rect2(sausage_pos.global_position - half, Vector2(40, 16))
+		var half = Vector2(60, 30)
+		var r = Rect2(sausage_pos.global_position - half, Vector2(120, 60))
 		return r.has_point(mouse)
 	return false
 
@@ -99,8 +99,8 @@ func _is_over_cookpos() -> bool:
 func _handle_tap(dish: NoodleDish) -> void:
 	if _sausage_available and not _sausage_flying:
 		var mouse = get_global_mouse_position()
-		var half = Vector2(20, 8)
-		var r = Rect2(sausage_pos.global_position - half, Vector2(40, 16))
+		var half = Vector2(60, 30)
+		var r = Rect2(sausage_pos.global_position - half, Vector2(120, 60))
 		if r.has_point(mouse):
 			_sausage_flying = true
 			var target = cook_pos.global_position - sausage_pos.global_position
@@ -170,6 +170,7 @@ func _update_visuals() -> void:
 	_set_layer_visible("boxed", dish.boxed)
 
 	if dish.can_spread_egg() and egg_timer.is_stopped():
+		print("EGG_TIMER: starting, egg_cracked=", dish.egg_cracked, " egg_spread=", dish.egg_spread)
 		egg_timer.start(Config.data.egg_spread_time)
 
 func _set_layer_visible(name: String, visible: bool) -> void:

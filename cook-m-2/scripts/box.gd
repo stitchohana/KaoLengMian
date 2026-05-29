@@ -69,6 +69,9 @@ func fill_from_dish() -> void:
 		}
 		state = BoxState.FILLED
 		_update_visual()
+		var main = get_node("/root/Main")
+		if main and main.has_method("_on_dish_boxed"):
+			main._on_dish_boxed()
 
 func _check_customer_drop() -> void:
 		var customers = get_tree().get_nodes_in_group("customer_drop_zone")
@@ -101,7 +104,6 @@ func _serve_to_customer(zone_area: Area2D) -> void:
 		Session.daily_mismatch += 1
 
 	Session.daily_served += 1
-	_get_dish().reset()
 
 	var customer_node = zone_area.get_parent()
 	if customer_node is CharacterBody2D:
