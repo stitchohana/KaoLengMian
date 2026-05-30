@@ -195,6 +195,7 @@ func _on_chicken_arrived(_id: String) -> void:
 	if not slot_egg or slot_egg.visible:
 		return
 
+	slot_egg.charges = 4
 	slot_egg.show()
 	slot_egg._can_click = false
 	slot_egg.position = chicken_item.position - ingredient_box.position - egg_slot.position
@@ -212,6 +213,7 @@ func _on_onion_block_arrived(_id: String) -> void:
 	var slot = _find_fill_item("onion")
 	if not slot or slot.visible:
 		return
+	slot.charges = 4
 	slot.show()
 	slot._can_click = false
 	slot.position = onion_zone.position - ingredient_box.position - onion_slot.position
@@ -227,6 +229,7 @@ func _on_chili_barrel_arrived(_id: String) -> void:
 	var slot = _find_fill_item("chili")
 	if not slot or slot.visible:
 		return
+	slot.charges = 4
 	slot.show()
 	slot._can_click = false
 	slot.position = chili_zone.position - ingredient_box.position - chili_slot.position
@@ -283,7 +286,8 @@ func _on_dish_boxed() -> void:
 	for slot in [egg_slot, onion_slot, chili_slot]:
 		for child in slot.get_children():
 			if child is Area2D:
-				child.hide()
+				if not ("charges" in child) or child.charges <= 0:
+					child.hide()
 	_reset_prep_items()
 	if _grill_node and _grill_node.has_method("reset"):
 		_grill_node.reset(false)
@@ -295,9 +299,6 @@ func _on_sausage_dropped(_zone: Node) -> void:
 		_grill_node._on_sausage_dropped()
 
 func _on_fill_item_used(_item_id: String) -> void:
-	var slot_item = _find_fill_item(_item_id)
-	if slot_item and is_instance_valid(slot_item):
-		slot_item.hide()
 
 	var slot_node = {"egg": egg_slot, "onion": onion_slot, "chili": chili_slot}.get(_item_id)
 	if not slot_node or not _grill_node or not _grill_node.has_node("CookPos"):

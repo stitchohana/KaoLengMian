@@ -23,8 +23,8 @@ var _sausage_flying: bool = false
 @onready var noodle_sprite: ColorRect = $CookPos/NoodleSprite
 var flipped_sprite: ColorRect
 var rolled_sprite: ColorRect
-var onion_sprite: ColorRect
-var sauce_sprite: ColorRect
+var onion_sprites: Array = []
+var sauce_sprites: Array = []
 var dish_sausage_sprite: ColorRect
 @onready var sausage_pos: Node2D = $SausagePos
 @onready var sausage_sprite: ColorRect = $SausagePos/SausageSprite
@@ -55,26 +55,28 @@ func _ready() -> void:
 	rolled_sprite.offset_bottom = 25.0
 	rolled_sprite.color = Color(0.75, 0.55, 0.35, 1)
 	cook_pos.add_child(rolled_sprite)
-	# Create onion and sauce sprites at CookPos
-	onion_sprite = ColorRect.new()
-	onion_sprite.name = "OnionSprite"
-	onion_sprite.visible = false
-	onion_sprite.offset_left = -18.0
-	onion_sprite.offset_top = -8.0
-	onion_sprite.offset_right = 18.0
-	onion_sprite.offset_bottom = 8.0
-	onion_sprite.color = Color(0.87, 0.63, 0.87, 1)
-	cook_pos.add_child(onion_sprite)
 
-	sauce_sprite = ColorRect.new()
-	sauce_sprite.name = "SauceSprite"
-	sauce_sprite.visible = false
-	sauce_sprite.offset_left = -22.0
-	sauce_sprite.offset_top = -12.0
-	sauce_sprite.offset_right = 22.0
-	sauce_sprite.offset_bottom = 12.0
-	sauce_sprite.color = Color(0.86, 0.08, 0.24, 1)
-	cook_pos.add_child(sauce_sprite)
+	# Create 3 onion sprites at CookPos (one per fill)
+	for i in range(3):
+		var s = ColorRect.new()
+		s.name = "OnionSprite" + str(i)
+		s.visible = false
+		s.size = Vector2(16, 10)
+		s.color = Color(0.87, 0.63, 0.87, 1)
+		s.position = Vector2(-24 + i * 24, -6)
+		cook_pos.add_child(s)
+		onion_sprites.append(s)
+
+	# Create 3 sauce sprites at CookPos (one per fill)
+	for i in range(3):
+		var s = ColorRect.new()
+		s.name = "SauceSprite" + str(i)
+		s.visible = false
+		s.size = Vector2(20, 12)
+		s.color = Color(0.86, 0.08, 0.24, 1)
+		s.position = Vector2(-24 + i * 24, 8)
+		cook_pos.add_child(s)
+		sauce_sprites.append(s)
 
 	# Create dish sausage sprite (visible at CookPos when added to dish)
 	dish_sausage_sprite = ColorRect.new()
@@ -206,9 +208,9 @@ func _handle_swipe(dish: NoodleDish) -> void:
 	if abs_x > abs_y:
 		pass
 	else:
-		if _drag_delta.y < 0 and dish.can_flip():
+		if dish.can_flip():
 			dish.flipped = true
-		elif _drag_delta.y > 0 and dish.can_roll():
+		elif dish.can_roll():
 			dish.rolled = true
 
 func _is_mouse_on_grill() -> bool:
@@ -217,11 +219,6 @@ func _is_mouse_on_grill() -> bool:
 	var mouse = get_global_mouse_position()
 	var rect = Rect2(bg.global_position, bg.size)
 	return rect.has_point(mouse)
-
-func _is_mouse_on_sausage_label(_event: InputEvent) -> bool:
-	if not $Labels/sausage.visible:
-		return false
-	return true
 
 func _update_visuals() -> void:
 	var dish = _get_dish()
@@ -244,12 +241,18 @@ func _update_visuals() -> void:
 	# Dish sausage sprite at CookPos shown when added to dish (not rolled yet)
 	dish_sausage_sprite.visible = dish.sausage_added and not dish.rolled and not dish.cut
 
+	# Show onion sprites one by one based on fill count
+	for i in range(3):
+		onion_sprites[i].visible = i < dish.onion_fill and not dish.rolled and not dish.cut
+
+	# Show sauce sprites one by one based on fill count
+	for i in range(3):
+		sauce_sprites[i].visible = i < dish.sauce_fill and not dish.rolled and not dish.cut
+
 	# Noodle sprites: raw noodle before flip, flipped sprite after flip
 	noodle_sprite.visible = dish.has_noodles and not dish.flipped
 	flipped_sprite.visible = dish.flipped and not dish.rolled and not dish.cut
 	rolled_sprite.visible = dish.rolled and not dish.cut
-	onion_sprite.visible = dish.onion_fill > 0 and not dish.rolled and not dish.cut
-	sauce_sprite.visible = dish.sauce_fill > 0 and not dish.rolled and not dish.cut
 
 	if dish.can_spread_egg() and egg_timer.is_stopped():
 		print("EGG_TIMER: starting, egg_cracked=", dish.egg_cracked, " egg_spread=", dish.egg_spread)
