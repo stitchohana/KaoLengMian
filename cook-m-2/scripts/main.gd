@@ -195,7 +195,7 @@ func _on_chicken_arrived(_id: String) -> void:
 	if not slot_egg or slot_egg.visible:
 		return
 
-	slot_egg.charges = 4
+	slot_egg.charges = Config.data.fill_item_charges
 	slot_egg.show()
 	slot_egg._can_click = false
 	slot_egg.position = chicken_item.position - ingredient_box.position - egg_slot.position
@@ -213,7 +213,7 @@ func _on_onion_block_arrived(_id: String) -> void:
 	var slot = _find_fill_item("onion")
 	if not slot or slot.visible:
 		return
-	slot.charges = 4
+	slot.charges = Config.data.fill_item_charges
 	slot.show()
 	slot._can_click = false
 	slot.position = onion_zone.position - ingredient_box.position - onion_slot.position
@@ -229,7 +229,7 @@ func _on_chili_barrel_arrived(_id: String) -> void:
 	var slot = _find_fill_item("chili")
 	if not slot or slot.visible:
 		return
-	slot.charges = 4
+	slot.charges = Config.data.fill_item_charges
 	slot.show()
 	slot._can_click = false
 	slot.position = chili_zone.position - ingredient_box.position - chili_slot.position
@@ -326,7 +326,7 @@ func _on_day_started(day: int) -> void:
 	print("Day %d 开始！" % day)
 	# 开始顾客生成
 	var count = Config.data.customers_per_day_base + (day - 1) * Config.data.customers_per_day_increment
-	CustomerManager.start_day(count, Config.data.base_spawn_interval)
+	CustomerManager.start_day(count, Config.data.base_spawn_interval, Config.data.first_spawn_delay)
 
 func _on_day_ended(_day: int, _stats: Dictionary) -> void:
 	for slot in [egg_slot, onion_slot, chili_slot]:

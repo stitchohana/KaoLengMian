@@ -57,7 +57,7 @@ func _ready() -> void:
 	cook_pos.add_child(rolled_sprite)
 
 	# Create 3 onion sprites at CookPos (one per fill)
-	for i in range(3):
+	for i in range(Config.data.onion_max_fill):
 		var s = ColorRect.new()
 		s.name = "OnionSprite" + str(i)
 		s.visible = false
@@ -68,7 +68,7 @@ func _ready() -> void:
 		onion_sprites.append(s)
 
 	# Create 3 sauce sprites at CookPos (one per fill)
-	for i in range(3):
+	for i in range(Config.data.sauce_max_fill):
 		var s = ColorRect.new()
 		s.name = "SauceSprite" + str(i)
 		s.visible = false
@@ -96,7 +96,7 @@ func _process(delta: float) -> void:
 	_update_visuals()
 	if _cut_clicks > 0:
 		_cut_click_timer += delta
-		if _cut_click_timer > 2.0:
+		if _cut_click_timer > Config.data.cut_click_timeout:
 			_cut_clicks = 0
 			_cut_click_timer = 0.0
 			_update_cut_label()
@@ -242,11 +242,11 @@ func _update_visuals() -> void:
 	dish_sausage_sprite.visible = dish.sausage_added and not dish.rolled and not dish.cut
 
 	# Show onion sprites one by one based on fill count
-	for i in range(3):
+	for i in range(onion_sprites.size()):
 		onion_sprites[i].visible = i < dish.onion_fill and not dish.rolled and not dish.cut
 
 	# Show sauce sprites one by one based on fill count
-	for i in range(3):
+	for i in range(sauce_sprites.size()):
 		sauce_sprites[i].visible = i < dish.sauce_fill and not dish.rolled and not dish.cut
 
 	# Noodle sprites: raw noodle before flip, flipped sprite after flip

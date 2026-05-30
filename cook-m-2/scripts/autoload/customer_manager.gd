@@ -26,14 +26,13 @@ func register_queue_positions(positions: Array[Marker2D]) -> void:
 func register_spawn_position(pos: Marker2D) -> void:
     spawn_position = pos
 
-func start_day(customer_count: int, spawn_interval: float) -> void:
+func start_day(customer_count: int, spawn_interval: float, first_delay: float = 0.0) -> void:
     total_to_spawn = customer_count
     total_spawned = 0
     _current_interval = spawn_interval
     active_customers.clear()
-    _spawn_customer()
     if total_spawned < total_to_spawn:
-        _spawn_timer.start(_current_interval)
+        _spawn_timer.start(first_delay)
 
 func _on_spawn_timer_timeout() -> void:
     _spawn_customer()

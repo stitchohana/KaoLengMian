@@ -33,8 +33,8 @@ func _process(delta: float) -> void:
 	match customer_state:
 		State.WALKING:
 			var dir = (target_position - global_position).normalized()
-			velocity = dir * 120.0
-			if global_position.distance_squared_to(target_position) < 400:
+			velocity = dir * Config.data.walk_speed
+			if global_position.distance_squared_to(target_position) < Config.data.arrival_distance * Config.data.arrival_distance:
 				velocity = Vector2.ZERO
 				customer_state = State.WAITING
 				patience_timer.start(patience_total)
@@ -46,11 +46,11 @@ func _process(delta: float) -> void:
 			elif patience_timer.time_left < patience_total * 0.5:
 				sprite.color = Color.YELLOW
 		State.LEAVING_HAPPY, State.LEAVING_ANGRY:
-			var exit_pos = Vector2(1200, global_position.y)
+			var exit_pos = Vector2(Config.data.exit_position_x, global_position.y)
 			var dir = (exit_pos - global_position).normalized()
-			velocity = dir * 150.0
+			velocity = dir * Config.data.leave_speed
 			move_and_slide()
-			if global_position.x > 1100:
+			if global_position.x > Config.data.exit_threshold_x:
 				queue_free()
 
 func move_to_position(pos: Vector2) -> void:

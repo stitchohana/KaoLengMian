@@ -65,7 +65,7 @@ func _fly_to_target() -> void:
 
 	print("FLY: ", name, " from ", global_position, " to ", _target.global_position)
 	if _target:
-		var fly_time = 0.8
+		var fly_time = Config.data.prep_fly_duration
 		var tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		tween.tween_property(self, "position", _target.position - get_parent().position, fly_time)
 		tween.tween_callback(_on_arrived)
