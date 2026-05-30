@@ -139,6 +139,7 @@ func _setup_grill() -> void:
 	_grill_node = grill_scene.instantiate()
 	grill_area.add_child(_grill_node)
 	_grill_node.dish_cut.connect(_on_dish_cut)
+	_grill_node.sausage_used.connect(_on_grill_sausage_used)
 
 func _setup_signals() -> void:
 	GameManager.day_started.connect(_on_day_started)
@@ -238,7 +239,7 @@ func _on_chili_barrel_arrived(_id: String) -> void:
 	print("辣酱已放入食材盒")
 
 func _on_sausage_arrived(_id: String) -> void:
-	sausage_raw.hide()
+	sausage_raw.call_deferred("set", "_can_click", false)
 	var flying = ITEM_SCENES.sausage.instantiate()
 	flying.item_color = Color(0.80, 0.36, 0.36)
 	flying.display_name = ""
@@ -260,6 +261,9 @@ func _on_sausage_arrived(_id: String) -> void:
 		if _grill_node and _grill_node.has_method("_on_sausage_dropped"):
 			_grill_node._on_sausage_dropped()
 	)
+func _on_grill_sausage_used() -> void:
+	if sausage_raw and is_instance_valid(sausage_raw):
+		sausage_raw._can_click = true
 
 func _on_dish_cut() -> void:
 	if _grill_node and _grill_node.has_node("CookPos"):
@@ -282,11 +286,11 @@ func _on_dish_boxed() -> void:
 				child.hide()
 	_reset_prep_items()
 	if _grill_node and _grill_node.has_method("reset"):
-		_grill_node.reset()
+		_grill_node.reset(false)
 
 func _on_sausage_dropped(_zone: Node) -> void:
 	# 隐藏生烤肠，通知铁板开始烤制
-	sausage_raw.hide()
+	sausage_raw._can_click = false
 	if _grill_node and _grill_node.has_method("_on_sausage_dropped"):
 		_grill_node._on_sausage_dropped()
 
@@ -315,14 +319,6 @@ func _on_fill_item_used(_item_id: String) -> void:
 			var es = cook_pos.get_node_or_null("EggSprite")
 			if es:
 				es.show()
-		elif _item_id == "onion":
-			var ns = cook_pos.get_node_or_null("NoodleSprite")
-			if ns:
-				ns.color = Color(0.87, 0.63, 0.87)
-		elif _item_id == "chili":
-			var ns = cook_pos.get_node_or_null("NoodleSprite")
-			if ns:
-				ns.color = Color(0.86, 0.08, 0.24)
 	)
 
 func _on_day_started(day: int) -> void:
